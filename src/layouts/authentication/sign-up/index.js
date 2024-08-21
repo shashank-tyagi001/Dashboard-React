@@ -32,18 +32,41 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
-import { useForm } from 'react-hook-form';
+import { useForm  } from 'react-hook-form';
 import classNames from "classnames";
+import { useState } from "react";
+import { useSelector , useDispatch } from "react-redux";
+import { studentPost } from '../../../redux/slice/signUpSlice';
 
 
 function Cover() {
 
+  const [data , setData] = useState({ });
+
+  const dispatch = useDispatch();
+
   const { register , handleSubmit ,  formState: { errors } } = useForm();
 
+  const post = useSelector( (state) => state.signUp.data );
+  //console.log(post);
 
-  const onSubmit = (data) => console.log(data);
-  
 
+  const getUserValue = (e) => {
+    setData({...data, [e.target.name]: e.target.value });
+ }
+ //console.log("bcsHDHD",data);
+    
+
+  const onSubmit  = () => {   
+      dispatch(studentPost(data));
+      handleClear();
+  }
+
+  const handleClear = () => {
+    document.getElementById("name").value = " ";
+    document.getElementById("email").value = " ";
+    document.getElementById("password").value = " ";
+  }
 
   return (
     <CoverLayout image={bgImage}>
@@ -69,7 +92,7 @@ function Cover() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit(onSubmit)}>
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" className={classNames(errors.name ? 'form-control is-invalid': 'form-control')} fullWidth {...register('name' , { required: "Name is required" })}/>
+              <MDInput type="text" label="Name" id="name"  name="name" variant="standard" className={classNames(errors.name ? 'form-control is-invalid': 'form-control')} fullWidth {...register('name' , { required: "Name is required" , onChange: getUserValue })} />
               {
                 errors.name &&
                 <small className="text-danger">
@@ -78,7 +101,7 @@ function Cover() {
               }
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" className={classNames(errors.email ? 'form-control is-invalid': 'form-control')} fullWidth {...register( 'email' , { required: "Email is necessary" , pattern: {value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i , message: "Please Enter VAlid email"}})}/>
+              <MDInput type="email" label="Email" id="email" name="email" variant="standard" className={classNames(errors.email ? 'form-control is-invalid': 'form-control')} fullWidth {...register( 'email' , { required: "Email is necessary" , pattern: {value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i , message: "Please Enter VAlid email"} , onChange: getUserValue })}/>
               {
                 errors.email &&
                 <small className="text-danger">
@@ -87,7 +110,7 @@ function Cover() {
               }
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" className={classNames(errors.password ? 'form-control is-invalid': 'form-control')} fullWidth {...register( 'password' , { required: "Password is necessary" , minLength: {value: 8 , message: "Please Enter 8 Characters"} })}/>
+              <MDInput type="password" label="Password" id="password" name="password" variant="standard" className={classNames(errors.password ? 'form-control is-invalid': 'form-control')} fullWidth {...register( 'password' , { required: "Password is necessary" , minLength: {value: 8 , message: "Please Enter 8 Characters"} , onChange: getUserValue })} />
               {
                 errors.password &&
                 <small className="text-danger">
@@ -117,7 +140,7 @@ function Cover() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" type="submit" fullWidth>
+              <MDButton variant="gradient" color="info" type="submit"  fullWidth>
                 sign in
               </MDButton>
             </MDBox>

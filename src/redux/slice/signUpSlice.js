@@ -1,8 +1,23 @@
 import { createSlice , createAsyncThunk } from "@reduxjs/toolkit";
 
 
-export const studentPost = createAsyncThunk('studentPost' , async () => {
-    const data = await axios.post("http://localhost:4000/students/" , newObject)
+
+export const studentPost = createAsyncThunk('studentPost' , async (data , {rejectWithValue}) => {
+
+    const postData = await fetch("http://localhost:4000/students/" , {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    });
+
+    try{
+        const result = await postData.json();
+        return result;
+    }catch (error){
+        return  rejectWithValue(error.response);
+    }   
 })
 
 
@@ -23,12 +38,11 @@ const signUpSlice = createSlice({
         })
         builder.addCase( studentPost.fulfilled , (state,action) => {
             state.isLoading = false,
-            state.data = action.payload
+            state.data.push(action.payload)
        })
-        builder.addCase( studentPost.pending , (state,action) => {
+        builder.addCase( studentPost.rejected , (state,action) => {
              state.isError = true
         })
-
     }
 })
 

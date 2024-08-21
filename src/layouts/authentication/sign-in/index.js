@@ -53,7 +53,10 @@ function Basic() {
   const { register , handleSubmit ,  formState: { errors } } = useForm();
   const [ info , setInfo ] = useState();
   const [ currEmail , setEmail ] = useState(); 
+  console.log(currEmail);
+  
   const [ currPass , setPass ] = useState();
+  console.log(currPass);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -79,8 +82,6 @@ const handlecheck = () => {
         if(item.email === currEmail && item.password === currPass)
           {
                navigate("/dashboard");
-          } else {
-            alert("Wrong Password ReEnter the passkey!!..");
           }     
   })
   }
