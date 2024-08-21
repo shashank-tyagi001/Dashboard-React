@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useState , useEffect } from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -41,8 +41,50 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
+import { useForm } from "react-hook-form";
+import classNames from 'classnames';
+import { useSelector , useDispatch } from 'react-redux';
+import { LoginData } from '../../../redux/slice/loginSlice';
+import { useNavigate } from "react-router-dom";
+
 function Basic() {
+
   const [rememberMe, setRememberMe] = useState(false);
+  const { register , handleSubmit ,  formState: { errors } } = useForm();
+  const [ info , setInfo ] = useState();
+  const [ currEmail , setEmail ] = useState(); 
+  const [ currPass , setPass ] = useState();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+
+  const onSubmit = (data) => {
+       setInfo(data);      
+  }
+  //console.log("cdsacsd",info);
+
+
+  useEffect( () => {
+    dispatch(LoginData())
+  } ,[]);
+
+
+  const studentData = useSelector( (state) => state.login.data);
+  //console.log("All data",studentData);
+
+
+const handlecheck = () => {
+
+   studentData.map( (item) => {      
+        if(item.email === currEmail && item.password === currPass)
+          {
+               navigate("/dashboard");
+          } else {
+            alert("Wrong Password ReEnter the passkey!!..");
+          }     
+  })
+  }
+  
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -82,12 +124,28 @@ function Basic() {
           </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
+          <MDBox component="form" role="form" onSubmit={handleSubmit(onSubmit)}>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput type="email" label="Email" className={classNames(errors.email ? 'form-control is-invalid': 'form-control')}  fullWidth  {...register( 'email' , { required: "Email is necessary" , pattern: {value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i , message: "Please Enter VAlid email"} , onChange: (e) => setEmail(e.target.value)})}/>
+              {
+                errors.email &&
+                <small className="text text-danger">
+                  {
+                    errors.email.message
+                  }
+                  </small>
+              }
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
+              <MDInput type="password" className={classNames(errors.email ? 'form-control is-invalid': 'form-control')} label="Password" fullWidth {...register( 'password' , { required: "Password is necessary" , minLength: {value: 8 , message: "Please Enter 8 Characters"} , onChange: (e) => setPass(e.target.value)})}/>
+              {
+                errors.password &&
+                <small className="text-danger">
+                  {
+                    errors.password.message
+                  }
+                  </small>
+              }
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -102,7 +160,7 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" color="info" type="submit" onClick={handlecheck} fullWidth>
                 sign in
               </MDButton>
             </MDBox>

@@ -32,7 +32,19 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
+import { useForm } from 'react-hook-form';
+import classNames from "classnames";
+
+
 function Cover() {
+
+  const { register , handleSubmit ,  formState: { errors } } = useForm();
+
+
+  const onSubmit = (data) => console.log(data);
+  
+
+
   return (
     <CoverLayout image={bgImage}>
       <Card>
@@ -55,15 +67,33 @@ function Cover() {
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
+          <MDBox component="form" role="form" onSubmit={handleSubmit(onSubmit)}>
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput type="text" label="Name" variant="standard" className={classNames(errors.name ? 'form-control is-invalid': 'form-control')} fullWidth {...register('name' , { required: "Name is required" })}/>
+              {
+                errors.name &&
+                <small className="text-danger">
+                  {errors.name.message}
+                </small>
+              }
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput type="email" label="Email" variant="standard" className={classNames(errors.email ? 'form-control is-invalid': 'form-control')} fullWidth {...register( 'email' , { required: "Email is necessary" , pattern: {value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i , message: "Please Enter VAlid email"}})}/>
+              {
+                errors.email &&
+                <small className="text-danger">
+                  {errors.email.message}
+                </small>
+              }
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
+              <MDInput type="password" label="Password" variant="standard" className={classNames(errors.password ? 'form-control is-invalid': 'form-control')} fullWidth {...register( 'password' , { required: "Password is necessary" , minLength: {value: 8 , message: "Please Enter 8 Characters"} })}/>
+              {
+                errors.password &&
+                <small className="text-danger">
+                  {errors.password.message}
+                </small>
+              }
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Checkbox />
@@ -87,7 +117,7 @@ function Cover() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" color="info" type="submit" fullWidth>
                 sign in
               </MDButton>
             </MDBox>
