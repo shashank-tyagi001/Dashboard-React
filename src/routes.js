@@ -7,19 +7,12 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Category from "./layouts/category/index";
-import Login from "./login/index";
+
 
 import Icon from "@mui/material/Icon";
 
 const routes = [
-  {
-    type: "collapse",
-    name: "Login",
-    key: "login",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/",
-    component: <Login />,
-  },
+  
   {
     type: "collapse",
     name: "Dashboard",

@@ -19,6 +19,7 @@
         "@mui/icons-material": "5.11.16",
         "@mui/material": "5.12.3",
         "@reduxjs/toolkit": "^2.2.7",
+        "ag-grid-react": "^32.1.0",
         "antd": "^5.20.2",
         "axios": "^1.7.4",
         "bootstrap": "^5.3.3",

@@ -31,9 +31,39 @@ import DataTable from "examples/Tables/DataTable";
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 
+//AG grid
+import { AgGridReact } from 'ag-grid-react'; 
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css"; 
+import { useState } from "react";
+
 function Tables() {
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
+
+  const [ rowData , setRowData ] = useState([
+    { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+    { make: "Ferrari", model: "Model Z", price: 89950, electric: false },
+    { make: "BMW", model: "Model A", price: 72950, electric: false },
+    { make: "AUDI", model: "Model B", price: 36950, electric: true }
+  ])
+
+  
+  /*const CustomButton = (p) => {
+    //console.log(p);    
+    return  <> 
+    <button onClick={() => window.alert('clicked')} >Push Me!!..</button>
+      {p.value}
+    </>
+  }*/
+
+  const [ columnDefs , setColumnDefs ] = useState([
+      { field: "make" , filter: true  , checkboxSelection: true },
+      { field: "model" , editable: true },
+      { field: "price",valueFormatter: p => '$' + p.value.toLocaleString() },
+      { field: "electric" , filter: true }
+  ])
+
 
   return (
     <DashboardLayout>
@@ -67,6 +97,7 @@ function Tables() {
               </MDBox>
             </Card>
           </Grid>
+
           <Grid item xs={12}>
             <Card>
               <MDBox
@@ -94,6 +125,28 @@ function Tables() {
               </MDBox>
             </Card>
           </Grid>
+
+          <Grid item xs={12}>
+          <Card>
+          <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+          <MDTypography variant="h6" color="white">
+                  Ag Grid Table
+          </MDTypography>
+          </MDBox>  
+         <div className="ag-theme-quartz-dark" style={{ height: 500 }}>
+          <AgGridReact  rowData={rowData} columnDefs={columnDefs} rowSelection={'multiple'} />
+        </div>
+        </Card>
+        </Grid> 
         </Grid>
       </MDBox>
       <Footer />
